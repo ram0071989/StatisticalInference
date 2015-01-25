@@ -1,0 +1,58 @@
+---
+title: "Statistical Inference Project"
+author: "Sriram"
+date: "Sunday, January 25, 2015"
+output: html_document
+---
+
+
+## Simulation
+
+Part-1: Simulation exercise
+
+This exercise involves the use of exponential distrobution of 40 exponentials, that is simulated 1000 times and the lambda is 0.2. In an exponential distribution the mean and the standard deviation is 1/lambda. We shall obsevre the distribution of the averages of the 40 exponentials and perform some comparisons on the mean, variance and the distribution. The R code for this simulation is as follows:
+
+```{r}
+# Variables used in simulation
+set.seed(1)
+noSim <- 1000
+lambda <- 0.2
+expSize <- 40
+
+# Simulation
+pexp <- matrix(rexp(noSim*expSize,rate=lambda),noSim,expSize)
+
+# Obbtain the mean of each row of the matrix
+pRowMean <- rowMeans(pexp)
+
+# Plot the histogram
+hist(pRowMean,main="Distribution of the averages from the above simulation",breaks=50,prob=TRUE, xlab="")
+
+# Density of averages
+lines(density(pRowMean),col='green')
+
+# Theoretical center of the distribution
+abline(v=1/lambda,col="blue")
+
+# Theoretical density of the averages of the samples
+x <- seq(min(pRowMean),max(pRowMean),length=50)
+y <- dnorm(x,mean=1/lambda,sd=(1/lambda/sqrt(expSize)))
+lines(x,y,col='red')
+legend('topright',c('Simulation','Theoretical'),col=c('green','red'),lty=c(1,1))
+```
+
+The theoretical center/mean of the distribution is given by 1/lambda = 1/0.2 = 5, which will be plotted on the same histogram in order to perform the comparision between the sample mean and the theoretical mean. The theoretical mean is denoted by the blue colored line. The sample mean is centered at:
+```{r}
+mean(pexp)
+```
+
+The sample variance is 0.6258 and the theoretical variance is given by:
+```{r}
+1/(((lambda)**2)*expSize)
+```
+
+The theoretical density of the samples averages is plotted in red color as shown in the below R code. It is seen from the figure that the averages of the sample follow a normal distribution due to CLT. The q-q plot below suggests the normality:
+```{r}
+qqnorm(pRowMean)
+qqline(pRowMean)
+```
